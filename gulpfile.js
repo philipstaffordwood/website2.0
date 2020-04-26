@@ -16,34 +16,28 @@ const changed = require('gulp-changed');
 const del = require('del');
 const sequence = require('run-sequence');
 const pkg = require('./package.json')
+var nunjucksRender = require('gulp-nunjucks-render');
 
 var production = false;
 
 const file = {
-  html:   'src/**/*.html',
-  scss:   'src/assets/scss/**/*.scss',
-  js:     'src/assets/js/src/**/*.js',
+  html: 'src/**/*.html',
+  scss: 'src/assets/scss/**/*.scss',
+  js: 'src/assets/js/src/**/*.js',
 }
 
 const page = {
-  js:     'src/assets/js/src/page.js',
-  scss:   'src/assets/scss/page.scss',
+  js: 'src/assets/js/src/page.js',
+  scss: 'src/assets/scss/page.scss',
 }
 
 const dir = {
-  css:    'src/assets/css/',
-  js:     'src/assets/js/',
-  font:   'src/assets/fonts/',
+  css: 'dist/assets/css/',
+  js: 'dist/assets/js/',
+  font: 'dist/assets/fonts/',
 }
 
 
-
-/*
-|--------------------------------------------------------------------------
-| Serve
-|--------------------------------------------------------------------------
-|
-*/
 function reload(done) {
   browserSync.reload();
   done();
@@ -51,54 +45,50 @@ function reload(done) {
 
 function serve(done) {
   browserSync({
-    server: 'src/'
+    server: 'dist/'
   });
 
-  gulp.watch( file.scss, scss );
-  gulp.watch( file.js, gulp.series(js, reload));
-  gulp.watch( file.html, reload );
+  gulp.watch(file.scss, scss);
+  gulp.watch(file.js, gulp.series(js, reload));
+  gulp.watch(file.html, gulp.series(nunjucks, reload));
   done();
 };
 
+function nunjucks() {
+  // Gets .html and .nunjucks files in pages
+  return gulp.src('src/**/*.+(html|nunjucks)')
+    // Renders template with nunjucks
+    .pipe(nunjucksRender({
+      path: ['src/templates']
+    }))
+    // output files in app folder
+    .pipe(gulp.dest('dist'))
+}
 
-/*
-|--------------------------------------------------------------------------
-| SASS
-|--------------------------------------------------------------------------
-|
-*/
+
 function scss() {
 
   var stream = gulp.src(page.scss)
-    .pipe( sourcemaps.init() )
-    .pipe( rename( { suffix: '.min' } ) )
-    .pipe( sass({ importer: tildeImporter, outputStyle: 'compressed' }).on('error', sass.logError) )
-    .pipe( autoprefixer())
-    .pipe( sourcemaps.write('.') )
-    .pipe( gulp.dest(dir.css) )
-    .pipe( browserSync.stream() );
+    .pipe(sourcemaps.init())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(sass({ importer: tildeImporter, outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(autoprefixer())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(dir.css))
+    .pipe(browserSync.stream());
 
   // Create unminified version if it's in production mode
-  if ( production ) {
+  if (production) {
     stream = gulp.src(page.scss)
-      .pipe( sourcemaps.init() )
-      .pipe( sass({importer: tildeImporter}).on('error', sass.logError) )
-      .pipe( autoprefixer())
-      .pipe( sourcemaps.write('.') )
-      .pipe( gulp.dest(dir.css) );
+      .pipe(sourcemaps.init())
+      .pipe(sass({ importer: tildeImporter }).on('error', sass.logError))
+      .pipe(autoprefixer())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(dir.css));
   }
-
   return stream;
-
 };
 
-
-/*
-|--------------------------------------------------------------------------
-| JS
-|--------------------------------------------------------------------------
-|
-*/
 function js() {
   return gulp.src(page.js)
     .pipe(webpack({
@@ -108,10 +98,8 @@ function js() {
         filename: 'page.min.js'
       }
     }))
-    .pipe( gulp.dest(dir.js) );
-
+    .pipe(gulp.dest(dir.js));
 };
-
 
 function jsProductionMinified() {
   return gulp.src(page.js)
@@ -125,7 +113,7 @@ function jsProductionMinified() {
         hints: false
       }
     }))
-    .pipe( gulp.dest(dir.js) );
+    .pipe(gulp.dest(dir.js));
 };
 
 
@@ -138,7 +126,7 @@ function jsProductionExpanded() {
         filename: 'page.js'
       }
     }))
-    .pipe( gulp.dest(dir.js) );
+    .pipe(gulp.dest(dir.js));
 };
 
 
@@ -150,14 +138,14 @@ function jsProductionExpanded() {
 */
 function copyFonts(done) {
   //gulp.src( 'node_modules/@fortawesome/fontawesome-free-webfonts/webfonts/*').pipe(gulp.dest(dir.font));
-  gulp.src( 'node_modules/font-awesome/fonts/*').pipe(gulp.dest(dir.font));
-  gulp.src( 'node_modules/themify-icons/themify-icons/fonts/*').pipe(gulp.dest(dir.font));
-  gulp.src( 'node_modules/et-line/fonts/*').pipe(gulp.dest(dir.font));
+  gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest(dir.font));
+  gulp.src('node_modules/themify-icons/themify-icons/fonts/*').pipe(gulp.dest(dir.font));
+  gulp.src('node_modules/et-line/fonts/*').pipe(gulp.dest(dir.font));
   done();
 };
 
 function distCopy() {
-  return gulp.src( ['src/**/*', '!src/assets/{js/src,plugin/thesaas,scss}{,/**}'] ).pipe(gulp.dest('dist/'));
+  return gulp.src(['src/**/*', '!src/assets/{js/src,plugin/thesaas,scss}{,/**}', '!src/*.html']).pipe(gulp.dest('dist/'));
 };
 
 
@@ -179,8 +167,8 @@ function distClean() {
 */
 function img() {
   return gulp.src('src/assets/img/**/*.{jpg,jpeg,png,gif}')
-    .pipe( imagemin() )
-    .pipe( gulp.dest('src/assets/img/') );
+    .pipe(imagemin())
+    .pipe(gulp.dest('dist/assets/img/'));
 };
 
 /*
@@ -201,7 +189,8 @@ function setDevMode(done) {
 
 
 
-exports.dev     = gulp.series(copyFonts, scss, js);
-exports.dist    = gulp.series(setProductionMode, distClean, copyFonts, scss, jsProductionMinified, jsProductionExpanded, distCopy, setDevMode);
-exports.watch   = serve;
-exports.default = serve;
+exports.dev = gulp.series(copyFonts, scss, js);
+exports.dist = gulp.series(setProductionMode, distClean, copyFonts, scss, nunjucks, jsProductionMinified, jsProductionExpanded, distCopy, setDevMode);
+exports.watch = gulp.series(distCopy, nunjucks, serve)
+exports.default = exports.watch
+exports.nunjucks = nunjucks

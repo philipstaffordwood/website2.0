@@ -3,25 +3,25 @@
  *
  */
 
-+function($){
++function ($) {
   page.registerVendor('Constellation');
 
-  page.initConstellation = function() {
+  page.initConstellation = function () {
     var distance = 120;
 
-    if( $( window ).width() < 700) {
+    if ($(window).width() < 700) {
       distance = 25;
     }
 
-    $('.constellation').each(function(){
+    $('.constellation').each(function () {
       var canvas = $(this),
-          color  = canvas.dataAttr( 'color', 'rgba(255, 255, 255, .8)' ),
-          length = canvas.dataAttr( 'length', 150 ),
-          radius = canvas.dataAttr( 'radius', 150 ),
-          starW  = canvas.dataAttr( 'starWidth', 1 ),
-          lineW  = canvas.dataAttr( 'lineWidth', 0.2 );
+        color = canvas.dataAttr('color', 'rgba(255, 255, 255, .8)'),
+        length = canvas.dataAttr('length', 150),
+        radius = canvas.dataAttr('radius', 150),
+        starW = canvas.dataAttr('starWidth', 1),
+        lineW = canvas.dataAttr('lineWidth', 0.2);
 
-      if ( color == 'dark' ) {
+      if (color == 'dark') {
         color = 'rgba(0, 0, 0, .6)';
       }
 
@@ -58,7 +58,7 @@
    * Makes a nice constellation on canvas
    * @constructor Constellation
    */
-  function Constellation (canvas, options) {
+  function Constellation(canvas, options) {
     var $canvas = $(canvas),
       context = canvas.getContext('2d'),
       defaults = {
@@ -84,7 +84,7 @@
       },
       config = $.extend(true, {}, defaults, options);
 
-    function Star () {
+    function Star() {
       this.x = Math.random() * canvas.width;
       this.y = Math.random() * canvas.height;
 
@@ -95,13 +95,13 @@
     }
 
     Star.prototype = {
-      create: function(){
+      create: function () {
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         context.fill();
       },
 
-      animate: function(){
+      animate: function () {
         var i;
         for (i = 0; i < config.length; i++) {
 
@@ -120,7 +120,7 @@
         }
       },
 
-      line: function(){
+      line: function () {
         var length = config.length,
           iStar,
           jStar,
@@ -205,7 +205,7 @@
     };
 
     this.bind = function () {
-      $canvas.on('mousemove', function(e){
+      $canvas.on('mousemove', function (e) {
         config.position.x = e.pageX - $canvas.offset().left;
         config.position.y = e.pageY - $canvas.offset().top;
       });

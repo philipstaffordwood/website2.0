@@ -15,8 +15,6 @@
 
 <body>
 
-
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light navbar-stick-dark" data-navbar="sticky">
     <div class="container">
 
@@ -39,33 +37,13 @@
           <a class="nav-link" href="/contact.html">Contact</a>
         </nav>
       </section>
-
-      <a class="btn btn-sm btn-round btn-dark" href="/contact.html">Get in touch</a>
+      <a class="btn btn-sm btn-round btn-dark" href="mailto:hello@flanksource.com">Contact Us</a>
+      <!-- <a class="btn btn-sm btn-round btn-dark" href="/contact.html">Get in touch</a> -->
 
     </div>
   </nav><!-- /.navbar -->
 
-
-  <!-- Header -->
-  <header class="header text-white pt-12 pb-10"
-    style="background-image: linear-gradient(-45deg, #667eea 0%, #764ba2 100%);">
-    <div class="container">
-      <h1 class="display-4">Start New Project</h1>
-      <p class="lead-2 mt-6">This is a starting point for your next awesome project. The skeleton is ready, just
-        populate it.</p>
-    </div>
-  </header><!-- /.header -->
-
-
-  <!-- Main Content -->
-  <main class="main-content">
-
-
-
-
-
-  </main>
-
+  {% block content %} {% endblock %}
 
   <!-- Footer -->
   <footer class="footer">
@@ -90,7 +68,7 @@
             <a class="nav-link" href="/about.html">About</a>
             <a class="nav-link" href="/services.html">Services</a>
             <a class="nav-link" href="/careers.html">Careers</a>
-            <a class="nav-link" href="/blog.html">Blog</a>
+            <a class="nav-link" href="/blog/index.html">Blog</a>
             <a class="nav-link" href="/contact.html">Contact</a>
           </div>
         </div>
