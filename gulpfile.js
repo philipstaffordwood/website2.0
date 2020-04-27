@@ -145,7 +145,7 @@ function copyFonts(done) {
 };
 
 function distCopy() {
-  return gulp.src(['src/**/*', '!src/assets/{js/src,plugin/thesaas,scss}{,/**}', '!src/*.html']).pipe(gulp.dest('dist/'));
+  return gulp.src(['src/**/*', '!src/assets/{js/src,plugin/thesaas,scss}{,/**}', '!src/**/*.html']).pipe(gulp.dest('dist/'));
 };
 
 
