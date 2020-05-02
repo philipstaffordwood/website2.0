@@ -1,0 +1,30 @@
+{
+  "name": "flanksource-website",
+  "version": "2.0.0-pre",
+  "description": "website for Flanksource",
+  "main": "index.html",
+  "dependencies": {
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "merge": "^1.2.1",
+    "merge-stream": "^2.0.0",
+    "nunjucks": "^3.2.1"
+  },
+  "devDependencies": {
+    "gulp-nunjucks-render": "^2.2.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flanksource/website2.0.git"
+  },
+  "author": "Philip Wood",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/flanksource/website2.0/issues"
+  },
+  "homepage": "https://github.com/flanksource/website2.0#readme"
+}

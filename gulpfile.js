@@ -5,6 +5,7 @@ const browsersync = require("browser-sync").create();
 const del = require("del");
 const gulp = require("gulp");
 const merge = require("merge-stream");
+var nunjucksRender = require('gulp-nunjucks-render');
 
 // BrowserSync
 function browserSync(done) {
@@ -46,11 +47,24 @@ function modules() {
 function watchFiles() {
     gulp.watch("./**/*.css", browserSyncReload);
     gulp.watch("./**/*.html", browserSyncReload);
+    gulp.watch("./**/*.njk", browserSyncReload);
 }
+
+function nunjucks() {
+    // Gets .html and .nunjucks files in pages
+    return gulp.src('pages/**/*.+(html|nunjucks|njk)')
+        // Renders template with nunjucks
+        .pipe(nunjucksRender({
+            path: ['templates']
+        }))
+        // output files in app folder
+        .pipe(gulp.dest('.'))
+}
+
 
 // Define complex tasks
 const vendor = gulp.series(clean, modules);
-const build = gulp.series(vendor);
+const build = gulp.series(vendor,nunjucks);
 const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 
 // Export tasks
@@ -59,3 +73,4 @@ exports.vendor = vendor;
 exports.build = build;
 exports.watch = watch;
 exports.default = watch;
+exports.nunjucks = nunjucks
