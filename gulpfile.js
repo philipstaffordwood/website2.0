@@ -194,3 +194,4 @@ exports.dist = gulp.series(setProductionMode, distClean, copyFonts, scss, nunjuc
 exports.watch = gulp.series(distCopy, nunjucks, serve)
 exports.default = exports.watch
 exports.nunjucks = nunjucks
+exports.scss = scss
